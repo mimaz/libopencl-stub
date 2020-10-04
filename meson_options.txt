@@ -1,0 +1,3 @@
+option('cl_version', type: 'integer',
+  value: 120,
+  description: 'OpenCL target version')
