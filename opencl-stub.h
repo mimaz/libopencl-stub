@@ -7,7 +7,6 @@
 #include <CL/cl.h>
 #include <CL/cl_gl.h>
 
-
 typedef void (*f_pfn_notify)(const char *, const void *, size_t, void *);
 
 typedef cl_int (*f_clGetPlatformIDs) (cl_uint, cl_platform_id *, cl_uint *);
@@ -228,6 +227,8 @@ typedef cl_mem (*f_clCreateFromGLTexture3D) (cl_context, cl_mem_flags, cl_GLenum
 
 typedef cl_int (*f_clGetGLContextInfoKHR) (const cl_context_properties *, cl_gl_context_info, size_t,
                                         void *, size_t *);
+
+int opencl_stub_load(const char *path);
 
 // Additional api to reset currently opened opencl shared-object
 // Subsequent calls will use newly set environment variables

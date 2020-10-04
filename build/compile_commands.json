@@ -1,0 +1,8 @@
+[
+  {
+    "directory": "/home/mieszko/Forcom/libopencl-stub/build",
+    "command": "cc -Ilibopencl-stub.so.p -I. -I.. -fdiagnostics-color=always -pipe -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -g -fPIC -MD -MQ libopencl-stub.so.p/opencl-stub.c.o -MF libopencl-stub.so.p/opencl-stub.c.o.d -o libopencl-stub.so.p/opencl-stub.c.o -c ../opencl-stub.c",
+    "file": "../opencl-stub.c",
+    "output": "libopencl-stub.so.p/opencl-stub.c.o"
+  }
+]

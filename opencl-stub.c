@@ -9,7 +9,7 @@
  *   If none of these are set, default system paths will be considered
 **/
 
-#include "libopencl.h"
+#include "opencl-stub.h"
 
 
 #if defined(__APPLE__) || defined(__MACOSX)
