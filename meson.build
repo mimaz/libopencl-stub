@@ -3,6 +3,7 @@ add_project_arguments('-DCL_TARGET_OPENCL_VERSION=' +
   get_option('cl_version').to_string(), language: 'c')
 
 cl_inc = include_directories('OpenCL-Headers')
+pkg = import('pkgconfig')
 
 src = [
   'opencl-stub.c',
@@ -20,3 +21,9 @@ opencl_stub_lib = shared_library(meson.project_name(),
 
 opencl_stub_dep = declare_dependency(link_with: opencl_stub_lib,
   include_directories: inc)
+
+pkg.generate(libraries: opencl_stub_lib,
+			 subdirs: 'opencl-stub',
+			 version: '1.0',
+			 name: 'opencl-stub',
+			 description: 'OpenCL stub library')
