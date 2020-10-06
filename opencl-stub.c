@@ -11,6 +11,9 @@
 
 #include "opencl-stub.h"
 
+#include <stdlib.h>
+#include <sys/stat.h>
+#include <dlfcn.h>
 
 #if defined(__APPLE__) || defined(__MACOSX)
 static const char *default_so_paths[] = {
