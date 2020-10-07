@@ -9,9 +9,11 @@
  *   If none of these are set, default system paths will be considered
 **/
 
+#define CL_TARGET_OPENCL_VERSION 300
 #include "opencl-stub.h"
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <sys/stat.h>
 #include <dlfcn.h>
 
@@ -44,14 +46,99 @@ static const char *default_so_paths[] = {
 };
 #endif
 
-static void *so_handle = NULL;
-
-
 static int access_file(const char *filename)
 {
   struct stat buffer;
   return (stat(filename, &buffer) == 0);
 }
+
+
+struct stub_desc
+{
+	struct stub_desc *next;
+	const char *fname;
+	void *fdefault;
+	void **fpointer;
+	int api_level;
+};
+
+static struct stub_desc *root_desc;
+static void *so_handle;
+
+#define __OPENCL_STUB_DEFINE(name, api_level, default_expr, return_type, arg_names, ...) \
+	static return_type \
+	d_##name (__VA_ARGS__) \
+	{ \
+		default_expr; \
+	}\
+	f_##name s_##name = d_##name; \
+	static void init_##name (void) __attribute__((constructor)); \
+	static struct stub_desc desc_##name; \
+	static void \
+	init_##name (void) \
+	{ \
+		desc_##name.next = root_desc; \
+		desc_##name.fname = #name; \
+		desc_##name.fdefault = (void *) d_##name; \
+		desc_##name.fpointer = (void *) &s_##name; \
+		root_desc = &desc_##name; \
+	} \
+	return_type \
+	name (__VA_ARGS__) \
+	{ \
+		return s_##name arg_names; \
+	}
+
+__OPENCL_STUB_DEFINE (clGetPlatformIDs, 100, return CL_INVALID_PLATFORM,
+					  cl_int,
+					  (num_entries, platforms, num_platforms),
+					  cl_uint num_entries,
+					  cl_platform_id *platforms,
+					  cl_uint *num_platforms);
+__OPENCL_STUB_DEFINE (clGetPlatformInfo, 100, return CL_INVALID_PLATFORM,
+					  cl_int,
+					  (platform, param_name, param_value_size,
+					   param_value, param_value_size_ret),
+					  cl_platform_id platform,
+					  cl_platform_info param_name,
+					  size_t param_value_size,
+					  void *param_value,
+					  size_t *param_value_size_ret);
+__OPENCL_STUB_DEFINE (clGetDeviceIDs, 100, return CL_INVALID_PLATFORM,
+					  cl_int,
+					  (platform, device, num_entries,
+					   devices, num_devices),
+					  cl_platform_id platform,
+					  cl_device_type device,
+					  cl_uint num_entries,
+					  cl_device_id *devices,
+					  cl_uint *num_devices);
+__OPENCL_STUB_DEFINE (clGetDeviceInfo, 100, return CL_INVALID_PLATFORM,
+					  cl_int,
+					  (device, param_name, param_value_size,
+					   param_value, param_value_size_ret),
+					  cl_device_id device,
+					  cl_device_info param_name,
+					  size_t param_value_size,
+					  void *param_value,
+					  size_t *param_value_size_ret);
+__OPENCL_STUB_DEFINE (clCreateSubDevices, 120, return CL_INVALID_PLATFORM,
+					  cl_int,
+					  (in_device, properties, num_devices,
+					   out_devices, num_devices_ret),
+					  cl_device_id in_device,
+					  const cl_device_partition_property *properties,
+					  cl_uint num_devices,
+					  cl_device_id *out_devices,
+					  cl_uint *num_devices_ret);
+__OPENCL_STUB_DEFINE (clRetainDevice, 120, return CL_INVALID_PLATFORM,
+					  cl_int,
+					  (device),
+					  cl_device_id device);
+__OPENCL_STUB_DEFINE (clReleaseDevice, 120, return CL_INVALID_PLATFORM,
+					  cl_int,
+					  (device),
+					  cl_device_id device);
 
 static int open_libopencl_so()
 {
@@ -93,147 +180,6 @@ static int open_libopencl_so()
     return -1;
   }
 }
-
-void stubOpenclReset()
-{
-  if(so_handle)
-    dlclose(so_handle);
-
-  so_handle = NULL;
-}
-
-cl_int
-clGetPlatformIDs(cl_uint          num_entries,
-                 cl_platform_id * platforms,
-                 cl_uint *        num_platforms)
-{
-  f_clGetPlatformIDs func;
-
-  if(!so_handle)
-    open_libopencl_so();
-
-  func = (f_clGetPlatformIDs) dlsym(so_handle, "clGetPlatformIDs");
-  if(func) {
-    return func(num_entries, platforms, num_platforms);
-  } else {
-    return CL_INVALID_PLATFORM;
-  }
-}
-
-
-cl_int
-clGetPlatformInfo(cl_platform_id   platform,
-                  cl_platform_info param_name,
-                  size_t           param_value_size,
-                  void *           param_value,
-                  size_t *         param_value_size_ret)
-{
-  f_clGetPlatformInfo func;
-
-  if(!so_handle)
-    open_libopencl_so();
-
-  func = (f_clGetPlatformInfo) dlsym(so_handle, "clGetPlatformInfo");
-  if(func) {
-    return func(platform, param_name, param_value_size, param_value, param_value_size_ret);
-  } else {
-    return CL_INVALID_PLATFORM;
-  }
-}
-
-
-cl_int
-clGetDeviceIDs(cl_platform_id   platform,
-               cl_device_type   device_type,
-               cl_uint          num_entries,
-               cl_device_id *   devices,
-               cl_uint *        num_devices)
-{
-  f_clGetDeviceIDs func;
-
-  if(!so_handle)
-    open_libopencl_so();
-
-  func = (f_clGetDeviceIDs) dlsym(so_handle, "clGetDeviceIDs");
-  if(func) {
-    return func(platform, device_type, num_entries, devices, num_devices);
-  } else {
-    return CL_INVALID_PLATFORM;
-  }
-}
-
-cl_int
-clGetDeviceInfo(cl_device_id    device,
-                cl_device_info  param_name,
-                size_t          param_value_size,
-                void *          param_value,
-                size_t *        param_value_size_ret)
-{
-  f_clGetDeviceInfo func;
-
-  if(!so_handle)
-    open_libopencl_so();
-
-  func = (f_clGetDeviceInfo) dlsym(so_handle, "clGetDeviceInfo");
-  if(func) {
-    return func(device, param_name, param_value_size, param_value, param_value_size_ret);
-  } else {
-    return CL_INVALID_PLATFORM;
-  }
-}
-
-cl_int
-clCreateSubDevices(cl_device_id                         in_device,
-                   const cl_device_partition_property * properties,
-                   cl_uint                              num_devices,
-                   cl_device_id *                       out_devices,
-                   cl_uint *                            num_devices_ret)
-{
-  f_clCreateSubDevices func;
-
-  if(!so_handle)
-    open_libopencl_so();
-
-  func = (f_clCreateSubDevices) dlsym(so_handle, "clCreateSubDevices");
-  if(func) {
-    return func(in_device, properties, num_devices, out_devices, num_devices_ret);
-  } else {
-    return CL_INVALID_PLATFORM;
-  }
-}
-
-cl_int
-clRetainDevice(cl_device_id device)
-{
-  f_clRetainDevice func;
-
-  if(!so_handle)
-    open_libopencl_so();
-
-  func = (f_clRetainDevice) dlsym(so_handle, "clRetainDevice");
-  if(func) {
-    return func(device);
-  } else {
-    return CL_INVALID_PLATFORM;
-  }
-}
-
-cl_int
-clReleaseDevice(cl_device_id device)
-{
-  f_clReleaseDevice func;
-
-  if(!so_handle)
-    open_libopencl_so();
-
-  func = (f_clReleaseDevice) dlsym(so_handle, "clReleaseDevice");
-  if(func) {
-    return func(device);
-  } else {
-    return CL_INVALID_PLATFORM;
-  }
-}
-
 
 cl_context
 clCreateContext(const cl_context_properties * properties,
@@ -1913,4 +1859,65 @@ clGetExtensionFunctionAddress(const char * func_name)
   } else {
     return NULL;
   }
+}
+
+static int
+load_symbols (int api_level)
+{
+	struct stub_desc *desc;
+
+	desc = root_desc;
+
+	while (desc != NULL) {
+		if (api_level >= desc->api_level) {
+			*desc->fpointer = dlsym (so_handle, desc->fname);
+		} else {
+			*desc->fpointer = desc->fdefault;
+		}
+
+		printf ("desc %s\n", desc->fname);
+
+		desc = desc->next;
+	}
+
+	return 1;
+}
+
+int
+opencl_stub_load (const char *path, int api_level)
+{
+	static int unload_registered;
+
+	if (!unload_registered) {
+		atexit (opencl_stub_unload);
+		unload_registered = 1;
+	}
+
+	opencl_stub_unload ();
+
+	printf ("load stub %s\n", path);
+
+	if (api_level < 0) {
+		api_level = 300;
+	}
+
+	if (access_file (path)) {
+		so_handle = dlopen (path, RTLD_LAZY);
+
+		if (so_handle != NULL) {
+			return load_symbols (api_level);
+		}
+	}
+
+	return 0;
+}
+
+void
+opencl_stub_unload (void)
+{
+	if (so_handle != NULL) {
+		printf ("unload stub\n");
+		dlclose (so_handle);
+		so_handle = NULL;
+	}
 }

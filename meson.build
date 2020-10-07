@@ -1,6 +1,4 @@
 project('opencl-stub', 'c')
-add_project_arguments('-DCL_TARGET_OPENCL_VERSION=' +
-  get_option('cl_version').to_string(), language: 'c')
 
 cl_inc = include_directories('OpenCL-Headers')
 pkg = import('pkgconfig')
@@ -27,3 +25,5 @@ pkg.generate(libraries: opencl_stub_lib,
 			 version: '1.0',
 			 name: 'opencl-stub',
 			 description: 'OpenCL stub library')
+
+subdir('test/')
