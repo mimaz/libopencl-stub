@@ -2,7 +2,6 @@
 #define LIBOPENCL_STUB_H
 
 #include <CL/cl.h>
-#include <CL/cl_gl.h>
 
 #define __OPENCL_STUB_DECLARE(name, return, ...) \
 	typedef return (*f_##name) (__VA_ARGS__); \
@@ -74,6 +73,12 @@ __OPENCL_STUB_DECLARE (clCreateBuffer, cl_mem,
 __OPENCL_STUB_DECLARE (clCreateSubBuffer, cl_mem,
 					   cl_mem, cl_mem_flags, cl_buffer_create_type,
 					   const void *, cl_int *);
+#endif
+#ifdef CL_VERSION_1_2
+__OPENCL_STUB_DECLARE (clCreateImage, cl_mem,
+					   cl_context, cl_mem_flags,
+					   const cl_image_format *,
+					   const cl_image_desc *, void *, cl_int *);
 #endif
 #ifdef CL_VERSION_2_0
 __OPENCL_STUB_DECLARE (clCreatePipe, cl_mem,
@@ -200,193 +205,202 @@ __OPENCL_STUB_DECLARE (clGetKernelArgInfo, cl_int,
 					   cl_kernel, cl_uint, cl_kernel_arg_info,
 					   size_t, void *, size_t *);
 #endif
-
-typedef cl_command_queue (*f_clCreateCommandQueue) (cl_context, cl_device_id, cl_command_queue_properties, cl_int *);
-
-typedef cl_int (*f_clRetainCommandQueue) (cl_command_queue);
-
-typedef cl_int (*f_clReleaseCommandQueue) (cl_command_queue);
-
-typedef cl_int (*f_clGetCommandQueueInfo) (cl_command_queue, cl_command_queue_info, size_t, void *, size_t *);
-
-typedef cl_mem (*f_clCreateSubBuffer) (cl_mem, cl_mem_flags, cl_buffer_create_type, const void *, cl_int *);
-
-typedef cl_mem (*f_clCreateImage) (cl_context, cl_mem_flags, const cl_image_format *, const cl_image_desc *, void *, cl_int *);
-
-typedef cl_int (*f_clRetainMemObject) (cl_mem);
-
-typedef cl_int (*f_clReleaseMemObject) (cl_mem);
-
-typedef cl_int (*f_clGetMemObjectInfo) (cl_mem, cl_mem_info, size_t, void *, size_t *);
-
-typedef cl_int (*f_clGetImageInfo) (cl_mem, cl_image_info, size_t, void *, size_t *);
-
-typedef cl_int (*f_clSetMemObjectDestructorCallback) (cl_mem, void (*pfn_notify)( cl_mem memobj, void* user_data), void *);
-
-typedef cl_int (*f_clGetSupportedImageFormats) (cl_context, cl_mem_flags, cl_mem_object_type, cl_uint, cl_image_format *, cl_uint *);
-
-typedef cl_sampler (*f_clCreateSampler) (cl_context, cl_bool, cl_addressing_mode, cl_filter_mode, cl_int *);
-
-typedef cl_int (*f_clRetainSampler) (cl_sampler);
-
-typedef cl_int (*f_clReleaseSampler) (cl_sampler);
-
-typedef cl_int (*f_clGetSamplerInfo) (cl_sampler, cl_sampler_info, size_t, void *, size_t *);
-
-typedef cl_program (*f_clCreateProgramWithSource) (cl_context, cl_uint, const char **, const size_t *, cl_int *);
-
-typedef cl_program (*f_clCreateProgramWithBuiltInKernels) (cl_context, cl_uint, const cl_device_id *, const char *, cl_int *);
-
-typedef cl_int (*f_clRetainProgram) (cl_program);
-
-typedef cl_int (*f_clReleaseProgram) (cl_program);
-
-typedef cl_int (*f_clBuildProgram) (cl_program, cl_uint, const cl_device_id *, const char *, 
-        void (*pfn_notify)(cl_program program, void * user_data), void *);
-
-typedef cl_int (*f_clCompileProgram) (cl_program, cl_uint, const cl_device_id *, const char *, cl_uint, const cl_program *,
-        const char **, void (*pfn_notify)(cl_program program, void * user_data), void *);
-
-typedef cl_program (*f_clLinkProgram) (cl_context, cl_uint, const cl_device_id *, const char *, cl_uint, const cl_program *,
-                    void (*pfn_notify)(cl_program program, void * user_data), void *, cl_int *);
-
-typedef cl_int (*f_clUnloadPlatformCompiler)(cl_platform_id);
-
-typedef cl_int (*f_clGetProgramInfo) (cl_program, cl_program_info, size_t, void *, size_t *);
-
-typedef cl_int (*f_clGetProgramBuildInfo) (cl_program, cl_device_id, cl_program_build_info, size_t, void *, size_t *);
-
-typedef cl_kernel (*f_clCreateKernel) (cl_program, const char *, cl_int *);
-
-typedef cl_int (*f_clCreateKernelsInProgram) (cl_program, cl_uint, cl_kernel *, cl_uint *);
-
-typedef cl_int (*f_clRetainKernel) (cl_kernel);
-
-typedef cl_int (*f_clReleaseKernel) (cl_kernel);
-
-typedef cl_int (*f_clSetKernelArg) (cl_kernel, cl_uint, size_t,const void *);
-
-typedef cl_int (*f_clGetKernelInfo) (cl_kernel, cl_kernel_info, size_t, void *, size_t *);
-
-typedef cl_int (*f_clGetKernelArgInfo) (cl_kernel, cl_uint, cl_kernel_arg_info, size_t, void *, size_t *);
-
-typedef cl_int (*f_clGetKernelWorkGroupInfo) (cl_kernel, cl_device_id, cl_kernel_work_group_info, size_t, void *, size_t *);
-
-typedef cl_int (*f_clWaitForEvents) (cl_uint, const cl_event *);
-
-typedef cl_int (*f_clGetEventInfo) (cl_event, cl_event_info, size_t, void *, size_t *);
-
-typedef cl_event (*f_clCreateUserEvent) (cl_context, cl_int *);
-
-typedef cl_int (*f_clRetainEvent) (cl_event);
-
-typedef cl_int (*f_clReleaseEvent) (cl_event);
-
-typedef cl_int (*f_clSetUserEventStatus) (cl_event, cl_int);
-
-typedef cl_int (*f_clSetEventCallback) (cl_event, cl_int, void (*pfn_notify)(cl_event, cl_int, void *), void *);
-
-typedef cl_int (*f_clGetEventProfilingInfo) (cl_event, cl_profiling_info, size_t, void *, size_t *);
-
-typedef cl_int (*f_clFlush) (cl_command_queue);
-
-typedef cl_int (*f_clFinish) (cl_command_queue);
-
-typedef cl_int (*f_clEnqueueReadBuffer) (cl_command_queue, cl_mem, cl_bool, size_t, size_t, void *, cl_uint, const cl_event *, cl_event *);
-
-typedef cl_int (*f_clEnqueueReadBufferRect) (cl_command_queue, cl_mem, cl_bool, const size_t *, const size_t *, const size_t *,
-                            size_t, size_t, size_t, size_t, void *, cl_uint, const cl_event *, cl_event *);
-
-typedef cl_int (*f_clEnqueueWriteBuffer) (cl_command_queue, cl_mem, cl_bool, size_t, size_t, const void *, cl_uint, const cl_event *, cl_event *);
-
-typedef cl_int (*f_clEnqueueWriteBufferRect) (cl_command_queue, cl_mem, cl_bool, const size_t *, const size_t *, const size_t *,
-                            size_t, size_t, size_t, size_t, const void *, cl_uint, const cl_event *, cl_event *);
-
-typedef cl_int (*f_clEnqueueFillBuffer) (cl_command_queue, cl_mem, const void *, size_t, size_t, size_t, cl_uint, const cl_event *, cl_event *);
-
-typedef cl_int (*f_clEnqueueCopyBuffer) (cl_command_queue, cl_mem, cl_mem, size_t, size_t, size_t, cl_uint, const cl_event *, cl_event *);
-
-typedef cl_int (*f_clEnqueueCopyBufferRect) (cl_command_queue, cl_mem, cl_mem, const size_t *, const size_t *, const size_t *,
-                            size_t, size_t, size_t, size_t, cl_uint, const cl_event *, cl_event *);
-
-typedef cl_int (*f_clEnqueueReadImage) (cl_command_queue, cl_mem, cl_bool, const size_t *, const size_t *,
-							size_t, size_t, void *, cl_uint, const cl_event *, cl_event *);
-
-typedef cl_int (*f_clEnqueueWriteImage) (cl_command_queue, cl_mem, cl_bool, const size_t *, const size_t *,
-							size_t, size_t, const void *, cl_uint, const cl_event *, cl_event *);
-
-typedef cl_int (*f_clEnqueueFillImage) (cl_command_queue, cl_mem, const void *, const size_t *, const size_t *, cl_uint, const cl_event *, cl_event *);
-
-typedef cl_int (*f_clEnqueueCopyImage) (cl_command_queue, cl_mem, cl_mem, const size_t *, const size_t *, const size_t *,
-          cl_uint, const cl_event *, cl_event *);
-
-typedef cl_int (*f_clEnqueueCopyImageToBuffer) (cl_command_queue, cl_mem, cl_mem, const size_t *, const size_t *, size_t, cl_uint, const cl_event *, cl_event *);
-
-typedef cl_int (*f_clEnqueueCopyBufferToImage) (cl_command_queue, cl_mem, cl_mem, size_t, const size_t *, const size_t *, cl_uint, const cl_event *, cl_event *);
-
-typedef void * (*f_clEnqueueMapBuffer) (cl_command_queue, cl_mem, cl_bool, cl_map_flags, size_t,
-						size_t, cl_uint, const cl_event *, cl_event *, cl_int *);
-
-typedef void * (*f_clEnqueueMapImage) (cl_command_queue, cl_mem, cl_bool, cl_map_flags, const size_t *, const size_t *,
-                  size_t *, size_t *, cl_uint, const cl_event *, cl_event *, cl_int *);
-
-typedef cl_int (*f_clEnqueueUnmapMemObject) (cl_command_queue, cl_mem, void *, cl_uint, const cl_event *, cl_event *);
-
-typedef cl_int (*f_clEnqueueMigrateMemObjects)(cl_command_queue, cl_uint, const cl_mem *, cl_mem_migration_flags,
-						cl_uint, const cl_event *, cl_event *);
-
-typedef cl_int (*f_clEnqueueNDRangeKernel)(cl_command_queue, cl_kernel, cl_uint, const size_t *, const size_t *,
-                       const size_t *, cl_uint, const cl_event *, cl_event *);
-
-typedef cl_int (*f_clEnqueueTask)(cl_command_queue, cl_kernel, cl_uint, const cl_event *, cl_event *);
-
-typedef cl_int (*f_clEnqueueNativeKernel)(cl_command_queue, void (*user_func)(void *),  void *, size_t,
-                      cl_uint, const cl_mem *, const void **, cl_uint, const cl_event *, cl_event *);
-
-typedef cl_int (*f_clEnqueueMarkerWithWaitList)(cl_command_queue, cl_uint, const cl_event *, cl_event *);
-
-typedef cl_int (*f_clEnqueueBarrierWithWaitList)(cl_command_queue, cl_uint, const cl_event *, cl_event *);
-
-typedef void * (*f_clGetExtensionFunctionAddressForPlatform)(cl_platform_id, const char *);
-
-typedef cl_mem (*f_clCreateImage2D)(cl_context, cl_mem_flags,const cl_image_format *, size_t, size_t,
-                				size_t, void *, cl_int *);
-
-typedef cl_mem (*f_clCreateImage3D)(cl_context, cl_mem_flags, const cl_image_format *, size_t,
-                		size_t, size_t, size_t, size_t, void *, cl_int *);
-
-typedef cl_int (*f_clEnqueueMarker)(cl_command_queue, cl_event *);
-
-typedef cl_int(*f_clEnqueueWaitForEvents)(cl_command_queue, cl_uint, const cl_event *);
-
-typedef cl_int (*f_clEnqueueBarrier)(cl_command_queue);
-
-typedef cl_int (*f_clUnloadCompiler)(void);
-
-typedef void * (*f_clGetExtensionFunctionAddress)(const char *);
-
-typedef cl_mem (*f_clCreateFromGLBuffer) (cl_context, cl_mem_flags, cl_GLuint, int *);
-
-typedef cl_mem (*f_clCreateFromGLTexture) (cl_context, cl_mem_flags, cl_GLenum, cl_GLint, cl_GLuint, cl_int *);
-
-typedef cl_mem (*f_clCreateFromGLRenderbuffer) (cl_context, cl_mem_flags, cl_GLuint, cl_int *);
-
-typedef cl_int (*f_clGetGLObjectInfo) (cl_mem memobj, cl_gl_object_type *, cl_GLuint *);
-
-typedef cl_int (*f_clGetGLTextureInfo) (cl_mem, cl_gl_texture_info, size_t, void *, size_t *);
-
-typedef cl_int (*f_clEnqueueAcquireGLObjects) (cl_command_queue, cl_uint, const cl_mem *, cl_uint,
-                                        const cl_event *, cl_event *);
-
-typedef cl_int (*f_clEnqueueReleaseGLObjects) (cl_command_queue, cl_uint, const cl_mem *, cl_uint,
-                                        const cl_event *, cl_event *);
-
-typedef cl_mem (*f_clCreateFromGLTexture2D) (cl_context, cl_mem_flags, cl_GLenum, cl_GLint, cl_GLuint, cl_int *);
-
-typedef cl_mem (*f_clCreateFromGLTexture3D) (cl_context, cl_mem_flags, cl_GLenum, cl_GLint, cl_GLuint, cl_int *);
-
-typedef cl_int (*f_clGetGLContextInfoKHR) (const cl_context_properties *, cl_gl_context_info, size_t,
-                                        void *, size_t *);
+__OPENCL_STUB_DECLARE (clGetKernelWorkGroupInfo, cl_int,
+					   cl_kernel, cl_device_id, cl_kernel_work_group_info,
+					   size_t, void *, size_t *);
+#ifdef CL_VERSION_2_1
+__OPENCL_STUB_DECLARE (clGetKernelSubGroupInfo, cl_int,
+					   cl_kernel, cl_device_id, cl_kernel_sub_group_info,
+					   size_t, const void *, size_t, void *, size_t *);
+#endif
+__OPENCL_STUB_DECLARE (clWaitForEvents, cl_int,
+					   cl_uint, const cl_event *);
+__OPENCL_STUB_DECLARE (clGetEventInfo, cl_int,
+					   cl_event, cl_event_info,
+					   size_t, void *, size_t *);
+#ifdef CL_VERSION_1_1
+__OPENCL_STUB_DECLARE (clCreateUserEvent, cl_event,
+					   cl_context, cl_int *);
+#endif
+__OPENCL_STUB_DECLARE (clRetainEvent, cl_int,
+					   cl_event);
+__OPENCL_STUB_DECLARE (clReleaseEvent, cl_int,
+					   cl_event);
+#ifdef CL_VERSION_1_1
+__OPENCL_STUB_DECLARE (clSetUserEventStatus, cl_int,
+					   cl_event, cl_int);
+__OPENCL_STUB_DECLARE (clSetEventCallback, cl_int,
+					   cl_event, cl_int,
+					   void (CL_CALLBACK *)(cl_event, cl_int, void *),
+					   void *);
+#endif
+__OPENCL_STUB_DECLARE (clGetEventProfilingInfo, cl_int,
+					   cl_event, cl_program_info, size_t, void *, size_t *);
+__OPENCL_STUB_DECLARE (clFlush, cl_int,
+					   cl_command_queue);
+__OPENCL_STUB_DECLARE (clFinish, cl_int,
+					   cl_command_queue);
+__OPENCL_STUB_DECLARE (clEnqueueReadBuffer, cl_int,
+					   cl_command_queue, cl_mem, cl_bool, size_t, size_t,
+					   void *, cl_uint, const cl_event *, cl_event *);
+#ifdef CL_VERSION_1_1
+__OPENCL_STUB_DECLARE (clEnqueueReadBufferRect, cl_int,
+					   cl_command_queue, cl_mem, cl_bool,
+					   const size_t *, const size_t *, const size_t *,
+					   size_t, size_t, size_t, size_t, void *,
+					   cl_uint, const cl_event *, cl_event *);
+#endif
+__OPENCL_STUB_DECLARE (clEnqueueWriteBuffer, cl_int,
+					   cl_command_queue, cl_mem, cl_bool,
+					   size_t, size_t, const void *, cl_uint,
+					   const cl_event *, cl_event *);
+#ifdef CL_VERSION_1_1
+__OPENCL_STUB_DECLARE (clEnqueueWriteBufferRect, cl_int,
+					   cl_command_queue, cl_mem, cl_bool,
+					   const size_t *, const size_t *, const size_t *,
+					   size_t, size_t, size_t, size_t, const void *,
+					   cl_uint, const cl_event *, cl_event *);
+#endif
+#ifdef CL_VERSION_1_2
+__OPENCL_STUB_DECLARE (clEnqueueFillBuffer, cl_int,
+					   cl_command_queue, cl_mem, const void *,
+					   size_t, size_t, size_t,
+					   cl_uint, const cl_event *, cl_event *);
+#endif
+__OPENCL_STUB_DECLARE (clEnqueueCopyBuffer, cl_int,
+					   cl_command_queue, cl_mem, cl_mem,
+					   size_t, size_t, size_t,
+					   cl_uint, const cl_event *, cl_event *);
+#ifdef CL_VERSION_1_1
+__OPENCL_STUB_DECLARE (clEnqueueCopyBufferRect, cl_int,
+					   cl_command_queue, cl_mem, cl_mem,
+					   const size_t *, const size_t *, const size_t *,
+					   size_t, size_t, size_t, size_t,
+					   cl_uint, const cl_event *, cl_event *);
+#endif
+__OPENCL_STUB_DECLARE (clEnqueueReadImage, cl_int,
+					   cl_command_queue, cl_mem, cl_bool,
+					   const size_t *, const size_t *,
+					   size_t, size_t, void *,
+					   cl_uint, const cl_event *, cl_event *);
+__OPENCL_STUB_DECLARE (clEnqueueWriteImage, cl_int,
+					   cl_command_queue, cl_mem, cl_bool,
+					   const size_t *, const size_t *,
+					   size_t, size_t, const void *,
+					   cl_uint, const cl_event *, cl_event *);
+#ifdef CL_VERSION_1_2
+__OPENCL_STUB_DECLARE (clEnqueueFillImage, cl_int,
+					   cl_command_queue, cl_mem,
+					   const void *, const size_t *, const size_t *,
+					   cl_uint, const cl_event *, cl_event *);
+#endif
+__OPENCL_STUB_DECLARE (clEnqueueCopyImage, cl_int,
+					   cl_command_queue, cl_mem, cl_mem,
+					   const size_t *, const size_t *, const size_t *,
+					   cl_uint, const cl_event *, cl_event *);
+__OPENCL_STUB_DECLARE (clEnqueueCopyImageToBuffer, cl_int,
+					   cl_command_queue, cl_mem, cl_mem,
+					   const size_t *, const size_t *, size_t,
+					   cl_uint, const cl_event *, cl_event *);
+__OPENCL_STUB_DECLARE (clEnqueueCopyBufferToImage, cl_int,
+					   cl_command_queue, cl_mem, cl_mem,
+					   size_t, const size_t *, const size_t *,
+					   cl_uint, const cl_event *, cl_event *);
+__OPENCL_STUB_DECLARE (clEnqueueMapBuffer, void *,
+					   cl_command_queue, cl_mem, cl_bool, cl_map_flags,
+					   size_t, size_t,
+					   cl_uint, const cl_event *, cl_event *, cl_int *);
+__OPENCL_STUB_DECLARE (clEnqueueMapImage, void *,
+					   cl_command_queue, cl_mem, cl_bool, cl_map_flags,
+					   const size_t *, const size_t *, size_t *, size_t *,
+					   cl_uint, const cl_event *, cl_event *, cl_int *);
+__OPENCL_STUB_DECLARE (clEnqueueUnmapMemObject, cl_int,
+					   cl_command_queue, cl_mem, void *,
+					   cl_uint, const cl_event *, cl_event *);
+#ifdef CL_VERSION_1_2
+__OPENCL_STUB_DECLARE (clEnqueueMigrateMemObjects, cl_int,
+					   cl_command_queue,
+					   cl_uint, const cl_mem *, cl_mem_migration_flags,
+					   cl_uint, const cl_event *, cl_event *);
+#endif
+__OPENCL_STUB_DECLARE (clEnqueueNDRangeKernel, cl_int,
+					   cl_command_queue, cl_kernel, cl_uint,
+					   const size_t *, const size_t *, const size_t *,
+					   cl_uint, const cl_event *, cl_event *);
+__OPENCL_STUB_DECLARE (clEnqueueNativeKernel, cl_int,
+					   cl_command_queue,
+					   void (CL_CALLBACK *)(void *),
+					   void *, size_t, cl_uint, const cl_mem *, const void **,
+					   cl_uint, const cl_event *, cl_event *);
+#ifdef CL_VERSION_1_2
+__OPENCL_STUB_DECLARE (clEnqueueMarkerWithWaitList, cl_int,
+					   cl_command_queue,
+					   cl_uint, const cl_event *, cl_event *);
+__OPENCL_STUB_DECLARE (clEnqueueBarrierWithWaitList, cl_int,
+					   cl_command_queue,
+					   cl_uint, const cl_event *, cl_event *);
+#endif
+#ifdef CL_VERSION_2_0
+__OPENCL_STUB_DECLARE (clEnqueueSVMFree, cl_int,
+					   cl_command_queue, cl_uint, void *[],
+					   void (CL_CALLBACK *)(cl_command_queue, cl_uint,
+											void *, void *),
+					   void *, cl_uint, const cl_event *, cl_event *);
+__OPENCL_STUB_DECLARE (clEnqueueSVMMemcpy, cl_int,
+					   cl_command_queue, cl_bool, void *,
+					   const void *, size_t,
+					   cl_uint, const cl_event *, cl_event *);
+__OPENCL_STUB_DECLARE (clEnqueueSVMMemFill, cl_int,
+					   cl_command_queue, void *,
+					   const void *, size_t, size_t,
+					   cl_uint, const cl_event *, cl_event *);
+__OPENCL_STUB_DECLARE (clEnqueueSVMMap, cl_int,
+					   cl_command_queue, cl_bool,
+					   cl_map_flags, void *, size_t,
+					   cl_uint, const cl_event *, cl_event *);
+__OPENCL_STUB_DECLARE (clEnqueueSVMUnmap, cl_int,
+					   cl_command_queue, void *,
+					   cl_uint, const cl_event *, cl_event *);
+__OPENCL_STUB_DECLARE (clEnqueueSVMMigrateMem, cl_int,
+					   cl_command_queue, cl_uint,
+					   const void *, const size_t *, cl_mem_migration_flags,
+					   cl_uint, const cl_event *, cl_event *);
+#endif
+#ifdef CL_VERSION_1_2
+__OPENCL_STUB_DECLARE (clGetExtensionFunctionAddressForPlatform, void *,
+					   cl_platform_id, const char *);
+#endif
+#ifdef CL_USE_DEPRECATED_OPENCL_1_0_APIS
+__OPENCL_STUB_DECLARE (clSetCommandQueueProperty, cl_int,
+					   cl_command_queue, cl_command_queue_properties,
+					   cl_bool, cl_command_queue_properties *);
+#endif
+__OPENCL_STUB_DECLARE (clCreateImage2D, cl_mem,
+					   cl_context, cl_mem_flags, const cl_image_format *,
+					   size_t, size_t, size_t, void *, cl_int *);
+__OPENCL_STUB_DECLARE (clCreateImage3D, cl_mem,
+					   cl_context, cl_mem_flags, const cl_image_format *,
+					   size_t, size_t, size_t, size_t, size_t,
+					   void *, cl_int *);
+__OPENCL_STUB_DECLARE (clEnqueueMarker, cl_int,
+					   cl_command_queue, cl_event *);
+__OPENCL_STUB_DECLARE (clEnqueueWaitForEvents, cl_int,
+					   cl_command_queue, cl_uint, const cl_event *);
+__OPENCL_STUB_DECLARE (clEnqueueBarrier, cl_int,
+					   cl_command_queue);
+__OPENCL_STUB_DECLARE (clUnloadCompiler, cl_int,
+					   void);
+__OPENCL_STUB_DECLARE (clGetExtensionFunctionAddress, void *,
+					   const char *);
+__OPENCL_STUB_DECLARE (clCreateCommandQueue, cl_command_queue,
+					   cl_context, cl_device_id,
+					   cl_command_queue_properties, cl_int *);
+__OPENCL_STUB_DECLARE (clCreateSampler, cl_sampler,
+					   cl_context, cl_bool, cl_addressing_mode,
+					   cl_filter_mode, cl_int *);
+__OPENCL_STUB_DECLARE (clEnqueueTask, cl_int,
+					   cl_command_queue, cl_kernel,
+					   cl_uint, const cl_event *, cl_event *);
 
 int opencl_stub_load(const char *path);
 
