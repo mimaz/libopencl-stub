@@ -35,7 +35,7 @@ __OPENCL_STUB_DECLARE (clSetDefaultDeviceCommandQueue, cl_int,
 __OPENCL_STUB_DECLARE (clGetDeviceAndHostTimer, cl_int,
 					   cl_device_id, cl_ulong *, cl_ulong *);
 __OPENCL_STUB_DECLARE (clGetHostTimer, cl_int,
-					   cl_ulong *);
+					   cl_device_id, cl_ulong *);
 #endif
 __OPENCL_STUB_DECLARE (clCreateContext, cl_context,
 					   const cl_context_properties *,

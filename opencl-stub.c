@@ -65,7 +65,11 @@ struct stub_desc
 static struct stub_desc *root_desc;
 static void *so_handle;
 
-#define __OPENCL_STUB_DEFINE(name, api_level, default_expr, return_type, arg_names, ...) \
+#define __OPENCL_STUB_DEFINE(name, \
+							 api_level, \
+							 return_type, \
+							 default_expr, \
+							 arg_names, ...) \
 	static return_type \
 	d_##name (__VA_ARGS__) \
 	{ \
@@ -89,14 +93,14 @@ static void *so_handle;
 		return s_##name arg_names; \
 	}
 
-__OPENCL_STUB_DEFINE (clGetPlatformIDs, 100, return CL_INVALID_PLATFORM,
-					  cl_int,
+__OPENCL_STUB_DEFINE (clGetPlatformIDs, 100, cl_int,
+					  return CL_INVALID_PLATFORM,
 					  (num_entries, platforms, num_platforms),
 					  cl_uint num_entries,
 					  cl_platform_id *platforms,
 					  cl_uint *num_platforms);
-__OPENCL_STUB_DEFINE (clGetPlatformInfo, 100, return CL_INVALID_PLATFORM,
-					  cl_int,
+__OPENCL_STUB_DEFINE (clGetPlatformInfo, 100, cl_int,
+					  return CL_INVALID_PLATFORM,
 					  (platform, param_name, param_value_size,
 					   param_value, param_value_size_ret),
 					  cl_platform_id platform,
@@ -104,8 +108,8 @@ __OPENCL_STUB_DEFINE (clGetPlatformInfo, 100, return CL_INVALID_PLATFORM,
 					  size_t param_value_size,
 					  void *param_value,
 					  size_t *param_value_size_ret);
-__OPENCL_STUB_DEFINE (clGetDeviceIDs, 100, return CL_INVALID_PLATFORM,
-					  cl_int,
+__OPENCL_STUB_DEFINE (clGetDeviceIDs, 100, cl_int,
+					  return CL_INVALID_PLATFORM,
 					  (platform, device, num_entries,
 					   devices, num_devices),
 					  cl_platform_id platform,
@@ -113,8 +117,8 @@ __OPENCL_STUB_DEFINE (clGetDeviceIDs, 100, return CL_INVALID_PLATFORM,
 					  cl_uint num_entries,
 					  cl_device_id *devices,
 					  cl_uint *num_devices);
-__OPENCL_STUB_DEFINE (clGetDeviceInfo, 100, return CL_INVALID_PLATFORM,
-					  cl_int,
+__OPENCL_STUB_DEFINE (clGetDeviceInfo, 100, cl_int,
+					  return CL_INVALID_PLATFORM,
 					  (device, param_name, param_value_size,
 					   param_value, param_value_size_ret),
 					  cl_device_id device,
@@ -122,8 +126,8 @@ __OPENCL_STUB_DEFINE (clGetDeviceInfo, 100, return CL_INVALID_PLATFORM,
 					  size_t param_value_size,
 					  void *param_value,
 					  size_t *param_value_size_ret);
-__OPENCL_STUB_DEFINE (clCreateSubDevices, 120, return CL_INVALID_PLATFORM,
-					  cl_int,
+__OPENCL_STUB_DEFINE (clCreateSubDevices, 120, cl_int,
+					  return CL_INVALID_PLATFORM,
 					  (in_device, properties, num_devices,
 					   out_devices, num_devices_ret),
 					  cl_device_id in_device,
@@ -131,14 +135,340 @@ __OPENCL_STUB_DEFINE (clCreateSubDevices, 120, return CL_INVALID_PLATFORM,
 					  cl_uint num_devices,
 					  cl_device_id *out_devices,
 					  cl_uint *num_devices_ret);
-__OPENCL_STUB_DEFINE (clRetainDevice, 120, return CL_INVALID_PLATFORM,
-					  cl_int,
+__OPENCL_STUB_DEFINE (clRetainDevice, 120, cl_int,
+					  return CL_INVALID_PLATFORM,
 					  (device),
 					  cl_device_id device);
-__OPENCL_STUB_DEFINE (clReleaseDevice, 120, return CL_INVALID_PLATFORM,
-					  cl_int,
+__OPENCL_STUB_DEFINE (clReleaseDevice, 120, cl_int,
+					  return CL_INVALID_PLATFORM,
 					  (device),
 					  cl_device_id device);
+__OPENCL_STUB_DEFINE (clSetDefaultDeviceCommandQueue, 210, cl_int,
+					  return CL_INVALID_PLATFORM,
+					  (context, device, command_queue),
+					  cl_context context,
+					  cl_device_id device,
+					  cl_command_queue command_queue);
+__OPENCL_STUB_DEFINE (clGetDeviceAndHostTimer, 210, cl_int,
+					  return CL_INVALID_PLATFORM,
+					  (device, device_timestamp, host_timestamp),
+					  cl_device_id device,
+					  cl_ulong *device_timestamp,
+					  cl_ulong *host_timestamp);
+__OPENCL_STUB_DEFINE (clGetHostTimer, 210, cl_int,
+					  return CL_INVALID_PLATFORM,
+					  (device, host_timestamp),
+					  cl_device_id device,
+					  cl_ulong *host_timestamp);
+__OPENCL_STUB_DEFINE (clCreateContext, 100, cl_context,
+					  *errcode_ret = CL_INVALID_PLATFORM; return NULL,
+					  (properties, num_devices, devices, pfn_notify,
+					   user_data, errcode_ret),
+					  const cl_context_properties *properties,
+					  cl_uint num_devices,
+					  const cl_device_id *devices,
+					  void (CL_CALLBACK *pfn_notify)(const char *,
+													 const void *,
+													 size_t,
+													 void *),
+					  void *user_data,
+					  cl_int *errcode_ret);
+__OPENCL_STUB_DEFINE (clCreateContextFromType, 100, cl_context,
+					  *errcode_ret = CL_INVALID_PLATFORM; return NULL,
+					  (properties, device_type, pfn_notify,
+					   user_data, errcode_ret),
+					  const cl_context_properties *properties,
+					  cl_device_type device_type,
+					  void (CL_CALLBACK *pfn_notify)(const char *,
+													 const void *,
+													 size_t,
+													 void *),
+					  void *user_data,
+					  cl_int *errcode_ret);
+__OPENCL_STUB_DEFINE (clRetainContext, 100, cl_int,
+					  return CL_INVALID_PLATFORM,
+					  (context),
+					  cl_context context);
+__OPENCL_STUB_DEFINE (clReleaseContext, 100, cl_int,
+					  return CL_INVALID_PLATFORM,
+					  (context),
+					  cl_context context);
+__OPENCL_STUB_DEFINE (clGetContextInfo, 100, cl_int,
+					  return CL_INVALID_PLATFORM,
+					  (context, param_name, param_value_size,
+					   param_value, param_value_size_ret),
+					  cl_context context,
+					  cl_context_info param_name,
+					  size_t param_value_size,
+					  void *param_value,
+					  size_t *param_value_size_ret);
+__OPENCL_STUB_DEFINE (clSetContextDestructorCallback, 300, cl_int,
+					  return CL_INVALID_PLATFORM,
+					  (context, pfn_notify, user_data),
+					  cl_context context,
+					  void (CL_CALLBACK *pfn_notify)(cl_context,
+													 void *),
+					  void *user_data);
+__OPENCL_STUB_DEFINE (clCreateCommandQueueWithProperties, 200, cl_command_queue,
+					  *errcode_ret = CL_INVALID_PLATFORM; return NULL,
+					  (context, device, properties, errcode_ret),
+					  cl_context context,
+					  cl_device_id device,
+					  const cl_queue_properties *properties,
+					  cl_int *errcode_ret);
+__OPENCL_STUB_DEFINE (clRetainCommandQueue, 100, cl_int,
+					  return CL_INVALID_PLATFORM,
+					  (command_queue),
+					  cl_command_queue command_queue);
+__OPENCL_STUB_DEFINE (clReleaseCommandQueue, 100, cl_int,
+					  return CL_INVALID_PLATFORM,
+					  (command_queue),
+					  cl_command_queue command_queue);
+__OPENCL_STUB_DEFINE (clGetCommandQueueInfo, 100, cl_int,
+					  return CL_INVALID_PLATFORM,
+					  (command_queue, param_name, param_value_size,
+					   param_value, param_value_size_ret),
+					  cl_command_queue command_queue,
+					  cl_command_queue_info param_name,
+					  size_t param_value_size,
+					  void *param_value,
+					  size_t *param_value_size_ret);
+__OPENCL_STUB_DEFINE (clCreateBuffer, 100, cl_mem,
+					  *errcode_ret = CL_INVALID_PLATFORM; return NULL,
+					  (context, flags, size, host_ptr, errcode_ret),
+					  cl_context context,
+					  cl_mem_flags flags,
+					  size_t size,
+					  void *host_ptr,
+					  cl_int *errcode_ret);
+__OPENCL_STUB_DEFINE (clCreateSubBuffer, 110, cl_mem,
+					  *errcode_ret = CL_INVALID_PLATFORM; return NULL,
+					  (buffer, flags, buffer_create_type,
+					   buffer_create_info, errcode_ret),
+					  cl_mem buffer,
+					  cl_mem_flags flags,
+					  cl_buffer_create_type buffer_create_type,
+					  const void *buffer_create_info,
+					  cl_int *errcode_ret);
+__OPENCL_STUB_DEFINE (clCreateImage, 120, cl_mem,
+					  *errcode_ret = CL_INVALID_PLATFORM; return NULL,
+					  (context, flags, image_format, image_desc,
+					   host_ptr, errcode_ret),
+					  cl_context context,
+					  cl_mem_flags flags,
+					  const cl_image_format *image_format,
+					  const cl_image_desc *image_desc,
+					  void *host_ptr,
+					  cl_int *errcode_ret);
+__OPENCL_STUB_DEFINE (clCreatePipe, 200, cl_mem,
+					  *errcode_ret = CL_INVALID_PLATFORM; return NULL,
+					  (context, flags, pipe_packet_size,
+					   pipe_max_packets, properties, errcode_ret),
+					  cl_context context,
+					  cl_mem_flags flags,
+					  cl_uint pipe_packet_size,
+					  cl_uint pipe_max_packets,
+					  const cl_pipe_properties *properties,
+					  cl_int *errcode_ret);
+__OPENCL_STUB_DEFINE (clCreateBufferWithProperties, 300, cl_mem,
+					  *errcode_ret = CL_INVALID_PLATFORM; return NULL,
+					  (context, properties, flags,
+					   size, host_ptr, errcode_ret),
+					  cl_context context,
+					  const cl_mem_properties *properties,
+					  cl_mem_flags flags,
+					  size_t size,
+					  void *host_ptr,
+					  cl_int *errcode_ret);
+__OPENCL_STUB_DEFINE (clCreateImageWithProperties, 300, cl_mem,
+					  *errcode_ret = CL_INVALID_PLATFORM; return NULL,
+					  (context, properties, flags, image_format,
+					   image_desc, host_ptr, errcode_ret),
+					  cl_context context,
+					  const cl_mem_properties *properties,
+					  cl_mem_flags flags,
+					  const cl_image_format *image_format,
+					  const cl_image_desc *image_desc,
+					  void *host_ptr,
+					  cl_int *errcode_ret);
+__OPENCL_STUB_DEFINE (clRetainMemObject, 100, cl_int,
+					  return CL_INVALID_PLATFORM,
+					  (memobj),
+					  cl_mem memobj);
+__OPENCL_STUB_DEFINE (clReleaseMemObject, 100, cl_int,
+					  return CL_INVALID_PLATFORM,
+					  (memobj),
+					  cl_mem memobj);
+__OPENCL_STUB_DEFINE (clGetSupportedImageFormats, 100, cl_int,
+					  return CL_INVALID_PLATFORM,
+					  (context, flags, image_type,
+					   num_entries, image_formats, num_image_formats),
+					  cl_context context,
+					  cl_mem_flags flags,
+					  cl_mem_object_type image_type,
+					  cl_uint num_entries,
+					  cl_image_format *image_formats,
+					  cl_uint *num_image_formats);
+__OPENCL_STUB_DEFINE (clGetMemObjectInfo, 100, cl_int,
+					  return CL_INVALID_PLATFORM,
+					  (memobj, param_name, param_value_size,
+					   param_value, param_value_size_ret),
+					  cl_mem memobj,
+					  cl_mem_info param_name,
+					  size_t param_value_size,
+					  void *param_value,
+					  size_t *param_value_size_ret);
+__OPENCL_STUB_DEFINE (clGetImageInfo, 100, cl_int,
+					  return CL_INVALID_PLATFORM,
+					  (image, param_name, param_value_size,
+					   param_value, param_value_size_ret),
+					  cl_mem image,
+					  cl_image_info param_name,
+					  size_t param_value_size,
+					  void *param_value,
+					  size_t *param_value_size_ret);
+__OPENCL_STUB_DEFINE (clGetPipeInfo, 200, cl_int,
+					  return CL_INVALID_PLATFORM,
+					  (pipe, param_name, param_value_size,
+					   param_value, param_value_size_ret),
+					  cl_mem pipe,
+					  cl_pipe_info param_name,
+					  size_t param_value_size,
+					  void *param_value,
+					  size_t *param_value_size_ret);
+__OPENCL_STUB_DEFINE (clSetMemObjectDestructorCallback, 110, cl_int,
+					  return CL_INVALID_PLATFORM,
+					  (memobj, pfn_notify, user_data),
+					  cl_mem memobj,
+					  void (CL_CALLBACK *)(cl_mem,
+										   void *),
+					  void *user_data);
+__OPENCL_STUB_DEFINE (clSVMAlloc, 200, void *,
+					  return NULL,
+					  (context, flags, size, alignment),
+					  cl_context context,
+					  cl_svm_mem_flags flags,
+					  size_t size,
+					  cl_uint alignment);
+__OPENCL_STUB_DEFINE (clSVMFree, 200, void,
+					  (void) NULL,
+					  (context, svm_pointer),
+					  cl_context context,
+					  void *svm_pointer);
+__OPENCL_STUB_DEFINE (clCreateSamplerWithProperties, 200, cl_sampler,
+					  *errcode_ret = CL_INVALID_PLATFORM; return NULL,
+					  (context, sampler_properties, errcode_ret),
+					  cl_context context,
+					  const cl_sampler_properties *sampler_properties,
+					  cl_int *errcode_ret);
+__OPENCL_STUB_DEFINE (clRetainSampler, 100, cl_int,
+					  return CL_INVALID_PLATFORM,
+					  (sampler),
+					  cl_sampler sampler);
+__OPENCL_STUB_DEFINE (clReleaseSampler, 100, cl_int,
+					  return CL_INVALID_PLATFORM,
+					  (sampler),
+					  cl_sampler sampler);
+__OPENCL_STUB_DEFINE (clGetSamplerInfo, 100, cl_int,
+					  return CL_INVALID_PLATFORM,
+					  (sampler, param_name, param_value_size,
+					   param_value, param_value_size_ret),
+					  cl_sampler sampler,
+					  cl_sampler_info param_name,
+					  size_t param_value_size,
+					  void *param_value,
+					  size_t *param_value_size_ret);
+__OPENCL_STUB_DEFINE (clCreateProgramWithSource, 100, cl_program,
+					  *errcode_ret = CL_INVALID_PLATFORM; return NULL,
+					  (context, count, strings, lengths, errcode_ret),
+					  cl_context context,
+					  cl_uint count,
+					  const char **strings,
+					  const size_t *lengths,
+					  cl_int *errcode_ret);
+__OPENCL_STUB_DEFINE (clCreateProgramWithBinary, 100, cl_program,
+					  *errcode_ret = CL_INVALID_PLATFORM; return NULL,
+					  (context, num_devices, device_list, lengths,
+					   binaries, binary_status, errcode_ret),
+					  cl_context context,
+					  cl_uint num_devices,
+					  const cl_device_id *device_list,
+					  const size_t *lengths,
+					  const unsigned char **binaries,
+					  cl_int *binary_status,
+					  cl_int *errcode_ret);
+__OPENCL_STUB_DEFINE (clCreateProgramWithBuiltInKernels, 120, cl_program,
+					  *errcode_ret = CL_INVALID_PLATFORM; return NULL,
+					  (context, num_devices, device_list,
+					   kernel_names, errcode_ret),
+					  cl_context context,
+					  cl_uint num_devices,
+					  const cl_device_id *device_list,
+					  const char *kernel_names,
+					  cl_int *errcode_ret);
+__OPENCL_STUB_DEFINE (clCreateProgramWithIL, 210, cl_program,
+					  *errcode_ret = CL_INVALID_PLATFORM; return NULL,
+					  (context, il, length, errcode_ret),
+					  cl_context context,
+					  const void *il,
+					  size_t length,
+					  cl_int *errcode_ret);
+__OPENCL_STUB_DEFINE (clRetainProgram, 100, cl_int,
+					  return CL_INVALID_PLATFORM,
+					  (program),
+					  cl_program program);
+__OPENCL_STUB_DEFINE (clReleaseProgram, 100, cl_int,
+					  return CL_INVALID_PLATFORM,
+					  (program),
+					  cl_program program);
+__OPENCL_STUB_DEFINE (clCompileProgram, 120, cl_int,
+					  return CL_INVALID_PLATFORM,
+					  (program, num_devices, device_list,
+					   options, num_input_headers, input_headers,
+					   header_include_names, pfn_notify, user_data),
+					  cl_program program,
+					  cl_uint num_devices,
+					  const cl_device_id *device_list,
+					  const char *options,
+					  cl_uint num_input_headers,
+					  const cl_program *input_headers,
+					  const char **header_include_names,
+					  void (CL_CALLBACK *pfn_notify)(cl_program,
+													 void *),
+					  void *user_data);
+__OPENCL_STUB_DEFINE (clLinkProgram, 120, cl_int,
+					  *errcode_ret = CL_INVALID_PLATFORM; return NULL,
+					  (context, num_devices, device_list,
+					   options, num_input_programs, input_programs,
+					   pfn_notify, user_data, errcode_ret),
+					  cl_context context,
+					  cl_uint num_devices,
+					  const cl_device_id *device_list,
+					  const char *options,
+					  cl_uint num_input_programs,
+					  const cl_program *input_programs,
+					  void (CL_CALLBACK *pfn_notify)(cl_program,
+													 void *),
+					  void *user_data,
+					  cl_int *errcode_ret);
+__OPENCL_STUB_DEFINE (clSetProgramReleaseCallback, 220, cl_int,
+					  return CL_INVALID_PLATFORM,
+					  (program, pfn_notify, user_data),
+					  cl_program program,
+					  void (CL_CALLBACK *pfn_notify)(cl_program,
+													 void *),
+					  void *user_data);
+__OPENCL_STUB_DEFINE (clSetProgramSpecializationConstant, 220, cl_int,
+					  return CL_INVALID_PLATFORM,
+					  (program, spec_id, spec_size, spec_value),
+					  cl_program program,
+					  cl_uint spec_id,
+					  size_t spec_size,
+					  const void *spec_value);
+__OPENCL_STUB_DEFINE (clUnloadPlatformCompiler, 120, cl_int,
+					  return CL_INVALID_PLATFORM,
+					  (platform),
+					  cl_platform_id platform);
 
 static int open_libopencl_so()
 {
@@ -178,269 +508,6 @@ static int open_libopencl_so()
   else
   {
     return -1;
-  }
-}
-
-cl_context
-clCreateContext(const cl_context_properties * properties,
-                cl_uint                 num_devices,
-                const cl_device_id *    devices,
-                void (*pfn_notify)(const char *, const void *, size_t, void *),
-                void *                  user_data,
-                cl_int *                errcode_ret)
-{
-  f_clCreateContext func;
-
-  if(!so_handle)
-    open_libopencl_so();
-
-  func = (f_clCreateContext) dlsym(so_handle, "clCreateContext");
-  if(func) {
-    return func(properties, num_devices, devices, pfn_notify, user_data, errcode_ret);
-  } else {
-    return NULL;
-  }
-}
-
-cl_context
-clCreateContextFromType(const cl_context_properties * properties,
-                        cl_device_type          device_type,
-                        void (*pfn_notify )(const char *, const void *, size_t, void *),
-                        void *                  user_data,
-                        cl_int *                errcode_ret)
-{
-  f_clCreateContextFromType func;
-
-  if(!so_handle)
-    open_libopencl_so();
-
-  func = (f_clCreateContextFromType) dlsym(so_handle, "clCreateContextFromType");
-  if(func) {
-    return func(properties, device_type, pfn_notify, user_data, errcode_ret);
-  } else {
-    return NULL;
-  }
-}
-
-cl_int
-clRetainContext(cl_context context)
-{
-  f_clRetainContext func;
-
-  if(!so_handle)
-    open_libopencl_so();
-
-  func = (f_clRetainContext) dlsym(so_handle, "clRetainContext");
-  if(func) {
-    return func(context);
-  } else {
-    return CL_INVALID_PLATFORM;
-  }
-}
-
-cl_int
-clReleaseContext(cl_context context)
-{
-  f_clReleaseContext func;
-
-  if(!so_handle)
-    open_libopencl_so();
-
-  func = (f_clReleaseContext) dlsym(so_handle, "clReleaseContext");
-  if(func) {
-    return func(context);
-  } else {
-    return CL_INVALID_PLATFORM;
-  }
-}
-
-cl_int
-clGetContextInfo(cl_context         context,
-                 cl_context_info    param_name,
-                 size_t             param_value_size,
-                 void *             param_value,
-                 size_t *           param_value_size_ret)
-{
-  f_clGetContextInfo func;
-
-  if(!so_handle)
-    open_libopencl_so();
-
-  func = (f_clGetContextInfo) dlsym(so_handle, "clGetContextInfo");
-  if(func) {
-    return func(context, param_name, param_value_size,
-                param_value, param_value_size_ret);
-  } else {
-    return CL_INVALID_PLATFORM;
-  }
-}
-
-
-cl_command_queue
-clCreateCommandQueue(cl_context                     context,
-                     cl_device_id                   device,
-                     cl_command_queue_properties    properties,
-                     cl_int *                       errcode_ret)
-{
-  f_clCreateCommandQueue func;
-
-  if(!so_handle)
-    open_libopencl_so();
-
-  func = (f_clCreateCommandQueue) dlsym(so_handle, "clCreateCommandQueue");
-  if(func) {
-    return func(context, device, properties, errcode_ret);
-  } else {
-    return NULL;
-  }
-}
-
-cl_int
-clRetainCommandQueue(cl_command_queue command_queue)
-{
-  f_clRetainCommandQueue func;
-
-  if(!so_handle)
-    open_libopencl_so();
-
-  func = (f_clRetainCommandQueue) dlsym(so_handle, "clRetainCommandQueue");
-  if(func) {
-    return func(command_queue);
-  } else {
-    return CL_INVALID_PLATFORM;
-  }
-}
-
-cl_int
-clReleaseCommandQueue(cl_command_queue command_queue)
-{
-  f_clReleaseCommandQueue func;
-
-  if(!so_handle)
-    open_libopencl_so();
-
-  func = (f_clReleaseCommandQueue) dlsym(so_handle, "clReleaseCommandQueue");
-  if(func) {
-    return func(command_queue);
-  } else {
-    return CL_INVALID_PLATFORM;
-  }
-}
-
-cl_int
-clGetCommandQueueInfo(cl_command_queue      command_queue,
-                      cl_command_queue_info param_name,
-                      size_t                param_value_size,
-                      void *                param_value,
-                      size_t *              param_value_size_ret)
-{
-  f_clGetCommandQueueInfo func;
-
-  if(!so_handle)
-    open_libopencl_so();
-
-  func = (f_clGetCommandQueueInfo) dlsym(so_handle, "clGetCommandQueueInfo");
-  if(func) {
-    return func(command_queue, param_name, param_value_size,
-                param_value, param_value_size_ret);
-  } else {
-    return CL_INVALID_PLATFORM;
-  }
-}
-
-
-cl_mem
-clCreateBuffer(cl_context   context,
-               cl_mem_flags flags,
-               size_t       size,
-               void *       host_ptr,
-               cl_int *     errcode_ret)
-{
-  f_clCreateBuffer func;
-
-  if(!so_handle)
-    open_libopencl_so();
-
-  func = (f_clCreateBuffer) dlsym(so_handle, "clCreateBuffer");
-  if(func) {
-    return func(context, flags, size, host_ptr, errcode_ret);
-  } else {
-    return NULL;
-  }
-}
-
-cl_mem
-clCreateSubBuffer(cl_mem                   buffer,
-                  cl_mem_flags             flags,
-                  cl_buffer_create_type    buffer_create_type,
-                  const void *             buffer_create_info,
-                  cl_int *                 errcode_ret)
-{
-  f_clCreateSubBuffer func;
-
-  if(!so_handle)
-    open_libopencl_so();
-
-  func = (f_clCreateSubBuffer) dlsym(so_handle, "clCreateSubBuffer");
-  if(func) {
-    return func(buffer, flags, buffer_create_type,
-                buffer_create_info, errcode_ret);
-  } else {
-    return NULL;
-  }
-}
-
-cl_mem
-clCreateImage(cl_context              context,
-              cl_mem_flags            flags,
-              const cl_image_format * image_format,
-              const cl_image_desc *   image_desc,
-              void *                  host_ptr,
-              cl_int *                errcode_ret)
-{
-  f_clCreateImage func;
-
-  if(!so_handle)
-    open_libopencl_so();
-
-  func = (f_clCreateImage) dlsym(so_handle, "clCreateImage");
-  if(func) {
-    return func(context, flags, image_format, image_desc,
-                host_ptr, errcode_ret);
-  } else {
-    return NULL;
-  }
-}
-
-cl_int
-clRetainMemObject(cl_mem memobj)
-{
-  f_clRetainMemObject func;
-
-  if(!so_handle)
-    open_libopencl_so();
-
-  func = (f_clRetainMemObject) dlsym(so_handle, "clRetainMemObject");
-  if(func) {
-    return func(memobj);
-  } else {
-    return CL_INVALID_PLATFORM;
-  }
-}
-
-cl_int
-clReleaseMemObject(cl_mem memobj)
-{
-  f_clReleaseMemObject func;
-
-  if(!so_handle)
-    open_libopencl_so();
-
-  func = (f_clReleaseMemObject) dlsym(so_handle, "clReleaseMemObject");
-  if(func) {
-    return func(memobj);
-  } else {
-    return CL_INVALID_PLATFORM;
   }
 }
 
