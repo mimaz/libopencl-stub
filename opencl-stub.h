@@ -1,8 +1,10 @@
+/*
+ * OpenCL stub library
+ * Copyright (c) 2020 Mieszko Mazurek <mimaz@gmx.com>
+ */
+
 #pragma once
 #include <CL/cl.h>
-
-int opencl_stub_load (const char *path, int api_level);
-void opencl_stub_unload (void);
 
 #define __OPENCL_STUB_DECLARE(name, return_type, ...) \
 	typedef return_type (*f_##name) (__VA_ARGS__); \

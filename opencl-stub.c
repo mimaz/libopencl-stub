@@ -1,13 +1,9 @@
 /*
- *   Stub libopencl that dlsyms into actual library based on environment variable
+ * OpenCL stub library
+ * Copyright (c) 2020 Mieszko Mazurek <mimaz@gmx.com>
  *
- *   LIBOPENCL_SO_PATH      -- Path to opencl so that will be searched first
- *   LIBOPENCL_SO_PATH_2    -- Searched second
- *   LIBOPENCL_SO_PATH_3    -- Searched third
- *   LIBOPENCL_SO_PATH_4    -- Searched fourth
- *
- *   If none of these are set, default system paths will be considered
-**/
+ * Original author: Krishnaraj Bhat (krrishnarraj)
+ */
 
 #define CL_TARGET_OPENCL_VERSION 300
 #define CL_USE_DEPRECATED_OPENCL_1_0_APIS 1
@@ -38,21 +34,15 @@ static const char *default_so_paths[] = {
 };
 #elif defined(__linux__)
 static const char *default_so_paths[] = {
+  "/usr/lib/x86_64-linux-gnu/libOpenCL.so",
+  "libOpenCL.so"
   "/usr/lib/libOpenCL.so",
   "/usr/local/lib/libOpenCL.so",
   "/usr/local/lib/libpocl.so",
   "/usr/lib64/libOpenCL.so",
   "/usr/lib32/libOpenCL.so",
-  "libOpenCL.so"
 };
 #endif
-
-static int access_file(const char *filename)
-{
-  struct stat buffer;
-  return (stat(filename, &buffer) == 0);
-}
-
 
 struct stub_desc
 {
@@ -63,50 +53,55 @@ struct stub_desc
 	int api_level;
 };
 
-static struct stub_desc *root_desc;
 static void *so_handle;
+static struct stub_desc *root_desc;
 
-
-
-static int open_libopencl_so()
+static int
+access_file(const char *filename)
 {
-  char *path = NULL, *str = NULL;
-  int i;
+  struct stat buffer;
 
-  if((str=getenv("LIBOPENCL_SO_PATH")) && access_file(str)) {
-    path = str;
-  }
-  else if((str=getenv("LIBOPENCL_SO_PATH_2")) && access_file(str)) {
-    path = str;
-  }
-  else if((str=getenv("LIBOPENCL_SO_PATH_3")) && access_file(str)) {
-    path = str;
-  }
-  else if((str=getenv("LIBOPENCL_SO_PATH_4")) && access_file(str)) {
-    path = str;
-  }
+  return (stat (filename, &buffer) == 0);
+}
 
-  if(!path)
-  {
-    for(i=0; i<(sizeof(default_so_paths) / sizeof(char*)); i++)
-    {
-      if(access_file(default_so_paths[i]))
-      {
-        path = (char *) default_so_paths[i];
-        break;
-      }
-    }
-  }
+static const char *
+get_path ()
+{
+	const char *path;
+	int i;
 
-  if(path)
-  {
-    so_handle = dlopen(path, RTLD_LAZY);
-    return 0;
-  }
-  else
-  {
-    return -1;
-  }
+	path = getenv ("OPENCL_STUB_PATH");
+
+	printf ("path: %s\n", path);
+	if (access_file (path)) {
+		return path;
+	}
+
+	printf ("no access\n");
+
+	for (i = 0; i < sizeof (default_so_paths) / sizeof (char *); i++) {
+		if (access_file (default_so_paths[i])) {
+			return default_so_paths[i];
+		}
+	}
+
+	return NULL;
+}
+
+static int
+open_libopencl_so()
+{
+	const char *path;
+
+	path = get_path ();
+
+	if (path) {
+		so_handle = dlopen (path, RTLD_LAZY);
+		printf ("loaded %s: %p\n", path, so_handle);
+		return 0;
+	} else {
+		return -1;
+	}
 }
 
 static int
@@ -115,7 +110,13 @@ load_symbols (int api_level)
 	struct stub_desc *desc;
 	void *sym;
 
+	if (api_level < 0) {
+		api_level = 300;
+	}
+
 	desc = root_desc;
+
+	printf ("so handle %p\n", so_handle);
 
 	while (desc != NULL) {
 		if (api_level >= desc->api_level) {
@@ -124,64 +125,36 @@ load_symbols (int api_level)
 			sym = NULL;
 		}
 
+		printf ("sym %p %s: %p\n", so_handle, desc->fname, sym);
+
 		if (sym == NULL) {
 			sym = desc->fdefault;
 		}
 
 		*desc->fpointer = sym;
 
-		printf ("desc %s\n", desc->fname);
-
 		desc = desc->next;
-	}
-
-	return 1;
-}
-
-int
-opencl_stub_load (const char *path, int api_level)
-{
-	static int unload_registered;
-
-	if (!unload_registered) {
-		atexit (opencl_stub_unload);
-		unload_registered = 1;
-	}
-
-	opencl_stub_unload ();
-
-	printf ("load stub %s\n", path);
-
-	if (api_level < 0) {
-		api_level = 300;
-	}
-
-	if (access_file (path)) {
-		so_handle = dlopen (path, RTLD_LAZY);
-
-		if (so_handle != NULL) {
-			return load_symbols (api_level);
-		}
 	}
 
 	return 0;
 }
 
-void
-opencl_stub_unload (void)
+static int
+opencl_stub_load_default ()
 {
-	if (so_handle != NULL) {
-		printf ("unload stub\n");
-		dlclose (so_handle);
-		so_handle = NULL;
+	if (open_libopencl_so () == 0) {
+		return load_symbols (-1);
 	}
+
+	return -1;
 }
 
-#define __OPENCL_STUB_DEFINE(name, \
-							 api_level, \
-							 return_type, \
-							 default_expr, \
-							 arg_names, ...) \
+#define __OPENCL_STUB_DEFINE_FULL(name, \
+								  global_name, \
+								  api_level, \
+								  return_type, \
+								  default_expr, \
+								  arg_names, ...) \
 	static return_type \
 	d_##name (__VA_ARGS__) \
 	{ \
@@ -200,17 +173,46 @@ opencl_stub_unload (void)
 		root_desc = &desc_##name; \
 	} \
 	return_type \
-	name (__VA_ARGS__) \
+	global_name (__VA_ARGS__) \
 	{ \
+		printf ("call %s from %s\n", #name, #global_name); \
 		return s_##name arg_names; \
 	}
 
-__OPENCL_STUB_DEFINE (clGetPlatformIDs, 100, cl_int,
-					  return CL_INVALID_PLATFORM,
-					  (num_entries, platforms, num_platforms),
-					  cl_uint num_entries,
-					  cl_platform_id *platforms,
-					  cl_uint *num_platforms);
+#define __OPENCL_STUB_DEFINE(name, \
+							 api_level, \
+							 return_type, \
+							 default_expr, \
+							 arg_names, ...) \
+	__OPENCL_STUB_DEFINE_FULL(name, \
+							  name, \
+							  api_level, \
+							  return_type, \
+							  default_expr, \
+							  arg_names, __VA_ARGS__)
+
+static cl_int wrapped_clGetPlatformIDs (cl_uint num_entries,
+										cl_platform_id *platforms,
+										cl_uint *num_platforms);
+
+cl_int
+clGetPlatformIDs (cl_uint num_entries,
+				  cl_platform_id *platforms,
+				  cl_uint *num_platforms)
+{
+	opencl_stub_load_default ();
+
+	return wrapped_clGetPlatformIDs (num_entries, platforms, num_platforms);
+}
+
+__OPENCL_STUB_DEFINE_FULL (clGetPlatformIDs,
+						   static wrapped_clGetPlatformIDs,
+						   100, cl_int,
+						   return CL_INVALID_PLATFORM,
+						   (num_entries, platforms, num_platforms),
+						   cl_uint num_entries,
+						   cl_platform_id *platforms,
+						   cl_uint *num_platforms);
 __OPENCL_STUB_DEFINE (clGetPlatformInfo, 100, cl_int,
 					  return CL_INVALID_PLATFORM,
 					  (platform, param_name, param_value_size,
