@@ -16,31 +16,34 @@
 
 #if defined(__APPLE__) || defined(__MACOSX)
 static const char *default_so_paths[] = {
-  "libOpenCL.so",
-  "/System/Library/Frameworks/OpenCL.framework/OpenCL"
+	"libOpenCL.so",
+	"/System/Library/Frameworks/OpenCL.framework/OpenCL"
 };
 #elif defined(__ANDROID__)
 static const char *default_so_paths[] = {
-  "/system/lib/libOpenCL.so",
-  "/system/vendor/lib/libOpenCL.so",
-  "/system/vendor/lib/egl/libGLES_mali.so",
-  "/system/vendor/lib/libPVROCL.so",
-  "/data/data/org.pocl.libs/files/lib/libpocl.so",
-  "libOpenCL.so"
+	"/vendor/lib64/libOpenCL.so",
+	"/vendor/lib/libOpenCL.so",
+	"/system/lib64/libOpenCL.so",
+	"/system/lib/libOpenCL.so",
+	"/system/vendor/lib64/libOpenCL.so",
+	"/system/vendor/lib/libOpenCL.so",
+	"/system/vendor/lib/egl/libGLES_mali.so",
+	"/system/vendor/lib/libPVROCL.so",
+	"/data/data/org.pocl.libs/files/lib/libpocl.so",
+	"libOpenCL.so"
 };
 #elif defined(_WIN32)
 static const char *default_so_paths[] = {
-  "OpenCL.dll"
+	"OpenCL.dll"
 };
 #elif defined(__linux__)
 static const char *default_so_paths[] = {
-  "/usr/lib/x86_64-linux-gnu/libOpenCL.so",
-  "libOpenCL.so"
-  "/usr/lib/libOpenCL.so",
-  "/usr/local/lib/libOpenCL.so",
-  "/usr/local/lib/libpocl.so",
-  "/usr/lib64/libOpenCL.so",
-  "/usr/lib32/libOpenCL.so",
+	"/usr/lib/x86_64-linux-gnu/libOpenCL.so",
+	"/usr/lib/libOpenCL.so",
+	"/usr/local/lib/libOpenCL.so",
+	"/usr/local/lib/libpocl.so",
+	"/usr/lib64/libOpenCL.so",
+	"/usr/lib32/libOpenCL.so",
 };
 #endif
 
@@ -175,7 +178,6 @@ opencl_stub_load_default ()
 	return_type \
 	global_name (__VA_ARGS__) \
 	{ \
-		printf ("call %s from %s\n", #name, #global_name); \
 		return s_##name arg_names; \
 	}
 
@@ -535,6 +537,17 @@ __OPENCL_STUB_DEFINE (clReleaseProgram, 100, cl_int,
 					  return CL_INVALID_PLATFORM,
 					  (program),
 					  cl_program program);
+__OPENCL_STUB_DEFINE (clBuildProgram, 100, cl_int,
+					  return CL_INVALID_PLATFORM,
+					  (program, num_devices, device_list,
+					   options, pfn_notify, user_data),
+					  cl_program program,
+					  cl_uint num_devices,
+					  const cl_device_id *device_list,
+					  const char *options,
+					  void (CL_CALLBACK *pfn_notify)(cl_program,
+													 void *),
+					  void *user_data);
 __OPENCL_STUB_DEFINE (clCompileProgram, 120, cl_int,
 					  return CL_INVALID_PLATFORM,
 					  (program, num_devices, device_list,
