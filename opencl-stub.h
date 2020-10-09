@@ -126,6 +126,12 @@ __OPENCL_STUB_DECLARE (clSetMemObjectDestructorCallback, cl_int,
 					   void *);
 #endif
 #ifdef CL_VERSION_2_0
+__OPENCL_STUB_DECLARE (clSVMAlloc, void *,
+					   cl_context, cl_svm_mem_flags, size_t, cl_uint);
+__OPENCL_STUB_DECLARE (clSVMFree, void,
+					   cl_context, void *);
+#endif
+#ifdef CL_VERSION_2_0
 __OPENCL_STUB_DECLARE (clCreateSamplerWithProperties, cl_sampler,
 					   cl_context, const cl_sampler_properties *,
 					   cl_int *);
@@ -201,7 +207,7 @@ __OPENCL_STUB_DECLARE (clCreateKernelsInProgram, cl_int,
 					   cl_kernel *, cl_uint *);
 #ifdef CL_VERSION_2_1
 __OPENCL_STUB_DECLARE (clCloneKernel, cl_kernel,
-					   cl_int *);
+					   cl_kernel, cl_int *);
 #endif
 __OPENCL_STUB_DECLARE (clRetainKernel, cl_int,
 					   cl_kernel);
@@ -368,7 +374,7 @@ __OPENCL_STUB_DECLARE (clEnqueueBarrierWithWaitList, cl_int,
 __OPENCL_STUB_DECLARE (clEnqueueSVMFree, cl_int,
 					   cl_command_queue, cl_uint, void *[],
 					   void (CL_CALLBACK *)(cl_command_queue, cl_uint,
-											void *, void *),
+											void *[], void *),
 					   void *, cl_uint, const cl_event *, cl_event *);
 __OPENCL_STUB_DECLARE (clEnqueueSVMMemcpy, cl_int,
 					   cl_command_queue, cl_bool, void *,
@@ -387,7 +393,7 @@ __OPENCL_STUB_DECLARE (clEnqueueSVMUnmap, cl_int,
 					   cl_uint, const cl_event *, cl_event *);
 __OPENCL_STUB_DECLARE (clEnqueueSVMMigrateMem, cl_int,
 					   cl_command_queue, cl_uint,
-					   const void *, const size_t *, cl_mem_migration_flags,
+					   const void **, const size_t *, cl_mem_migration_flags,
 					   cl_uint, const cl_event *, cl_event *);
 #endif
 #ifdef CL_VERSION_1_2
