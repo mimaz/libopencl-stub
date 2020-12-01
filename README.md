@@ -1,20 +1,12 @@
-libopencl-stub
-==============
+opencl-stub library
+===================
 
-A stub opecl library that dynamically dlopen/dlsyms opencl implementations at runtime based on environment variables. Will be useful when opencl implementations are installed in non-standard paths (say pocl on android)
+A thin wrapper of OpenCL API that loads proper implementation and forwards
+calls. Works well on Android.
 
-
-
- LIBOPENCL_SO_PATH      -- Path to opencl so that will be searched first
- 
- LIBOPENCL_SO_PATH_2    -- Searched second
- 
- LIBOPENCL_SO_PATH_3    -- Searched third
- 
- LIBOPENCL_SO_PATH_4    -- Searched fourth
- 
- 
- 
-
-Default paths will be searched otherwise
-
+The library defines function pointers to each supported function and initializes
+default dummy implementation. API definition calls the pointers directly
+providing no overhead like additional checks or looking for the symbol each
+time. The exception is clGetPlatformIDs that additionally
+looks for OpenCL implementations and loads proper symbols. It's mandatory to
+call clGetPlatformIDs first then.
