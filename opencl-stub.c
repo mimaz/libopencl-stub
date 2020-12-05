@@ -75,12 +75,9 @@ get_path ()
 
     path = getenv ("OPENCL_STUB_PATH");
 
-    printf ("path: %s\n", path);
     if (access_file (path)) {
 	return path;
     }
-
-    printf ("no access\n");
 
     for (i = 0; i < sizeof (default_so_paths) / sizeof (char *); i++) {
 	if (access_file (default_so_paths[i])) {
@@ -100,7 +97,6 @@ open_libopencl_so()
 
     if (path) {
 	so_handle = dlopen (path, RTLD_LAZY);
-	printf ("loaded %s: %p\n", path, so_handle);
 	return 0;
     } else {
 	return -1;
@@ -119,16 +115,12 @@ load_symbols (int api_level)
 
     desc = root_desc;
 
-    printf ("so handle %p\n", so_handle);
-
     while (desc != NULL) {
 	if (api_level >= desc->api_level) {
 	    sym = dlsym (so_handle, desc->fname);
 	} else {
 	    sym = NULL;
 	}
-
-	printf ("sym %p %s: %p\n", so_handle, desc->fname, sym);
 
 	if (sym == NULL) {
 	    sym = desc->fdefault;
