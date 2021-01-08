@@ -1,0 +1,4 @@
+option('cl_headers', type: 'boolean',
+  value: false,
+  description: 'Install OpenCL headers alongside the library ' +
+	       '(may conflict with other packages)')
