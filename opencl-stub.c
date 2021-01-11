@@ -44,6 +44,9 @@ static const char *default_so_paths[] = {
     "/usr/local/lib/libpocl.so",
     "/usr/lib64/libOpenCL.so",
     "/usr/lib32/libOpenCL.so",
+    "/run/host/usr/lib/libOpenCL.so",
+    "/run/host/usr/lib64/libOpenCL.so",
+    "/run/host/usr/lib32/libOpenCL.so",
 };
 #endif
 
