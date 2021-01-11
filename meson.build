@@ -12,6 +12,11 @@ inc = [
   cl_inc,
 ]
 
+if get_option('cl_headers')
+  install_subdir('OpenCL-Headers/CL', install_dir: 'include/')
+  inc += include_directories('./OpenCL-Headers/CL')
+endif
+
 opencl_stub_lib = static_library(meson.project_name(),
   src, link_args: [ '-ldl' ],
   include_directories: cl_inc,
